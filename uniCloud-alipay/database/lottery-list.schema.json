@@ -29,6 +29,9 @@
 		},
 		"sort": {
 			"description": "排序"
+		},
+		"count": {
+			"description": "奖品数量"
 		}
 	}
 }
