@@ -1,6 +1,13 @@
 {
   "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
     {
+      "path": "pages/list/index",
+      "style": {
+        "navigationBarTitleText": "活动",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
       "path": "pages/cloudFunction/cloudFunction",
       "style": {
         "navigationBarTitleText": "云函数",
@@ -232,10 +239,10 @@
     "borderStyle": "black",
     "backgroundColor": "#ffffff",
     "list": [{
-        "pagePath": "pages/cloudFunction/cloudFunction",
+        "pagePath": "pages/list/index",
         "iconPath": "static/tabbar/fn.png",
         "selectedIconPath": "static/tabbar/fn1.png",
-        "text": "云函数"
+        "text": "活动"
       },
       {
         "pagePath": "pages/cloudObject/cloudObject",
