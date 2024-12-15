@@ -1,0 +1,9 @@
+{
+  "name": "login",
+  "dependencies": {
+    "hello-common": "file:..\/common\/hello-common"
+  },
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}
