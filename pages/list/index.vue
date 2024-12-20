@@ -5,8 +5,8 @@
       v-model="dataList"
       @query="queryList"
       refresher-theme-style="white"
-			safe-area-inset-bottom
-			use-safe-area-placeholder
+      safe-area-inset-bottom
+      use-safe-area-placeholder
     >
       <template #top>
         <!-- 顶部导航栏 -->
@@ -43,9 +43,9 @@
               <view class="date">{{ item.desc }}</view>
             </view>
             <view class="price-row">
-              <text class="participants"
-                >{{ this.userList.length || 0 }}人已参与</text
-              >
+              <text class="participants" @click="handlePreview">
+                {{ this.userList.length || 0 }}人已参与
+              </text>
               <template v-if="item.status === 2">
                 <view
                   class="join-btn"
@@ -63,6 +63,39 @@
       </view>
     </z-paging>
   </view>
+  <uni-popup ref="popup" type="center">
+    <view class="panel">
+      <view class="panel-title">参与人名单</view>
+      <view class="panel-content">
+        <view class="user-item" v-for="(user, index) in userList" :key="index">
+          <text class="username">{{ user.username }}</text>
+          <text class="erp">{{ user.erp }}</text>
+        </view>
+      </view>
+    </view>
+  </uni-popup>
+  <uni-popup ref="popupPrize" type="center">
+    <view class="panel">
+      <view class="panel-title">获奖名单</view>
+      <view class="panel-content">
+        <view class="user-item" v-for="(user, index) in userList" :key="index">
+          <text class="username">{{ user.username }}</text>
+          <text class="erp">{{ user.erp }}</text>
+        </view>
+      </view>
+    </view>
+  </uni-popup>
+  <uni-popup ref="popupLottery" type="center">
+    <view class="panel">
+      <view class="panel-title">开奖</view>
+      <view class="panel-content">
+        <view class="user-item" v-for="(user, index) in userList" :key="index">
+          <text class="username">{{ user.username }}</text>
+          <text class="erp">{{ user.erp }}</text>
+        </view>
+      </view>
+    </view>
+  </uni-popup>
 </template>
 
 <script>
@@ -76,6 +109,7 @@ export default {
       menuButtonInfo: {},
       winnerBannerShow: false,
       userList: [],
+      userLoading: false,
     };
   },
   mounted() {
@@ -89,38 +123,26 @@ export default {
   methods: {
     // 获取用户信息
     getUserInfo() {
+      this.userLoading = true;
       db.collection("user")
         .limit(1000)
         .get()
         .then(({ result: { data } }) => {
           this.userList = data;
+          this.userLoading = false;
         });
     },
-    login() {
-      // uni.login({
-      //   success: ({ code }) => {
-      //     console.log("登录成功", code);
-      //     uniCloud
-      //       .callFunction({
-      //         name: "login",
-      //         data: {
-      //           code: code,
-      //         },
-      //       })
-      //       .then((res) => {
-      //         console.log(res.result.openid);
-      //         //这里就是拿到用户的openid啦
-      //       });
-      //   },
-      // });
+    /**
+     * 查看参与人
+     */
+    handlePreview() {
+      this.$refs.popup.open("center");
     },
     handleResult(item) {
-      // 处理查看结果逻辑
-      console.log("查看结果:", item);
+      this.$refs.popupPrize.open("center");
     },
     handleJoin(item) {
-      // 处理抢奖逻辑
-      console.log("参与抽奖:", item);
+      this.$refs.popupLottery.open("center");
     },
     queryList() {
       db.collection("lottery-list")
@@ -251,6 +273,61 @@ export default {
     font-size: 24rpx;
     color: #ff6b00;
     margin-top: 10rpx;
+  }
+}
+
+.panel {
+  background: #fff;
+  border-radius: 30rpx;
+  width: 600rpx;
+  padding: 30rpx;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 30rpx;
+    padding: 4rpx;
+    background: linear-gradient(45deg, #ff6b00, #ff8c00);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .panel-title {
+    font-size: 32rpx;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20rpx;
+  }
+
+  .panel-content {
+    max-height: 600rpx;
+    overflow-y: auto;
+
+    .user-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 20rpx 0;
+      border-bottom: 1rpx solid #f5f5f5;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .username {
+        font-size: 28rpx;
+        color: #333;
+      }
+
+      .erp {
+        font-size: 28rpx;
+        color: #666;
+      }
+    }
   }
 }
 </style>
